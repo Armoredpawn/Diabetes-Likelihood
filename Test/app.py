@@ -111,10 +111,10 @@ def submit():
                         s2 += j
         s2 = float(s2) * 100
         if s2 < 12.079556854343798:
-        	s2 = "low"
+        	s2 = "LOW"
         else:
-        	s2 = "high"
-        s2 = "You have a " + s2 + " chance of being diagnosed with diabetes."
+        	s2 = "HIGH"
+        s2 = "Risk of developing diabetes: " + s2
 
         # Render the page with the result and the form data (including user inputs)
         return render_template('index.html', input_values=s2, form_data=form_data)
