@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How Likely Are You to Have Diabetes?</title>
+
+  <!-- Professional font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root{
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: rgba(17,24,39,0.10);
+      --shadow: 0 12px 30px rgba(17,24,39,0.08);
+
+      --primary: #2563eb;
+      --primaryDark: #1d4ed8;
+      --ring: rgba(37, 99, 235, 0.25);
+
+      --successBg: #ecfdf5;
+      --successBorder: #a7f3d0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body{
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1000px 500px at 10% 10%, rgba(37,99,235,0.14), transparent 60%),
+        radial-gradient(900px 450px at 90% 0%, rgba(16,185,129,0.10), transparent 55%),
+        var(--bg);
+    }
+
+    .page{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 28px 16px 60px;
+    }
+
+    /* Header */
+    .header{
+      background: linear-gradient(135deg, rgba(37,99,235,0.10), rgba(16,185,129,0.08));
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .kicker{
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primaryDark);
+      background: rgba(37,99,235,0.10);
+      border: 1px solid rgba(37,99,235,0.18);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    h1{
+      margin: 12px 0 6px;
+      font-size: clamp(26px, 3vw, 38px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle{
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 75ch;
+    }
+
+    .meta{
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .meta strong{ color: var(--text); font-weight: 700; }
+
+    /* Layout */
+    .layout{
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 980px){
+      .layout{
+        grid-template-columns: 2fr 1fr;
+        align-items: start;
+      }
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .card-title{
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .card-hint{
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    /* Form grid */
+    form{
+      margin: 0;
+    }
+
+    .grid{
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 720px){
+      .grid{
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .field{
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 12px 10px;
+      background: rgba(255,255,255,0.85);
+    }
+
+    .label{
+      display: block;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .control-row{
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Inputs */
+    input[type="number"], select{
+      width: 100%;
+      border: 1px solid rgba(17,24,39,0.18);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 14px;
+      outline: none;
+      background: #fff;
+      transition: box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+    input[type="number"]:focus, select:focus{
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--ring);
+    }
+
+    /* Radio pills (no JS needed) */
+    .pill{
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(17,24,39,0.18);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.12s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      background: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .pill:hover{
+      transform: translateY(-1px);
+    }
+    .pill input{
+      accent-color: var(--primary);
+    }
+
+    /* Sticky submit area */
+    .actions{
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.85);
+    }
+
+    .btn{
+      appearance: none;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-weight: 800;
+      font-size: 15px;
+      cursor: pointer;
+      background: var(--primary);
+      color: white;
+      transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 10px 18px rgba(37,99,235,0.18);
+    }
+    .btn:hover{
+      background: var(--primaryDark);
+      transform: translateY(-1px);
+    }
+    .btn:active{
+      transform: translateY(0px);
+    }
+
+    .note{
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    /* Output / results */
+    .result{
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid var(--successBorder);
+      background: var(--successBg);
+    }
+    .result h3{
+      margin: 0 0 8px;
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .result .value{
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      color: #065f46;
+      word-break: break-word;
+    }
+    .result .muted{
+      margin-top: 6px;
+      color: #065f46;
+      opacity: 0.85;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    /* Disclaimer */
+    .disclaimer{
+      margin-top: 14px;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      background: rgba(245, 158, 11, 0.10);
+      border-radius: 14px;
+      padding: 12px 14px;
+      color: #92400e;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    /* Small helper for grouping */
+    .section-chip{
+      display: inline-block;
+      margin-top: 10px;
+      font-weight: 800;
+      font-size: 12px;
+      color: #374151;
+      background: rgba(17,24,39,0.06);
+      border: 1px solid rgba(17,24,39,0.08);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <!-- Header -->
+    <div class="header">
+      <span class="kicker">Diabetes Risk Analyzer</span>
+      <h1>How Likely Are You to Have Diabetes?</h1>
+      <p class="subtitle">
+        Enter lifestyle markers below to generate a risk estimate from a machine-learning model.
+        This is designed for educational research and demonstration.
+      </p>
+      <div class="meta">
+        <span>Made by <strong>Ayush Srivastava</strong></span>
+        <span>•</span>
+        <span>Input time: ~2 minutes</span>
+      </div>
+    </div>
+
+    <div class="layout">
+      <!-- Form -->
+      <div class="card">
+        <div class="card-title">Lifestyle Markers</div>
+        <p class="card-hint">
+          Please answer every question. For numeric fields, enter values as numbers only.
+        </p>
+
+        <form action="/" method="POST">
+          <div class="grid">
+
+            <!-- BP -->
+            <div class="field">
+              <span class="label">High blood pressure?</span>
+              <div class="control-row">
+                <label class="pill">
+                  <input type="radio" id="BP_yes" name="BP" value="Yes" {% if form_data.BP == 1 %} checked {% endif %}>
+                  Yes
+                </label>
+                <label class="pill">
+                  <input type="radio" id="BP_no" name="BP" value="No" {% if form_data.BP == 0 %} checked {% endif %}>
+                  No
+                </label>
+              </div>
+            </div>
+
+            <!-- HC -->
+            <div class="field">
+              <span class="label">High cholesterol?</span>
+              <div class="control-row">
+                <label class="pill">
+                  <input type="radio" id="HC_yes" name="HC" value="Yes" {% if form_data.HC == 1 %} checked {% endif %}>
+                  Yes
+                </label>
+                <label class="pill">
+                  <input type="radio" id="HC_no" name="HC" value="No" {% if form_data.HC == 0 %} checked {% endif %}>
+                  No
+                </label>
+              </div>
+            </div>
+
+            <!-- CC -->
+            <div class="field">
+              <span class="label">Cholesterol check in the last 5 years?</span>
+              <div class="control-row">
+                <label class="pill">
+                  <input type="radio" id="CC_yes" name="CC" value="Yes" {% if form_data.CC == 1 %} checked {% endif %}>
+                  Yes
+                </label>
+                <label class="pill">
+                  <input type="radio" id="CC_no" name="CC" value="No" {% if form_data.CC == 0 %} checked {% endif %}>
+                  No
+                </label>
+              </div>
+            </div>
+
+            <!-- BMI -->
+            <div class="field">
+              <span class="label">Body Mass Index (BMI)</span>
+              <input type="number" placeholder="e.g., 24.5" name="BMI" id="BMI" step="any" value="{{ form_data.BMI }}">
+            </div>
+
+            <!-- SM -->
+            <div class="field">
+              <span class="label">Smoked 100+ cigarettes in your lifetime?</span>
+              <div class="control-row">
+                <label class="pill">
+                  <input type="radio" id="SM_yes" name="SM" value="Yes" {% if form_data.SM == 1 %} checked {% endif %}>
+                  Yes
+                </label>
+                <label class="pill">
+                  <input type="radio" id="SM_no" name="SM" value="No" {% if form_data.SM == 0 %} checked {% endif %}>
+                  No
+                </label>
+              </div>
+            </div>
+
+            <!-- ST -->
+            <div class="field">
+              <span class="label">Ever had a stroke?</span>
+              <div class="control-row">
+                <label class="pill">
+                  <input type="radio" id="ST_yes" name="ST" value="Yes" {% if form_data.ST == 1 %} checked {% endif %}>
+                  Yes
+                </label>
+                <label class="pill">
+                  <input type="radio" id="ST_no" name="ST" value="No" {% if form_data.ST == 0 %} checked {% endif %}>
+                  No
+                </label>
+              </div>
+            </div>
+
+            <!-- HD -->
+            <div class="field">
+              <span class="label">Coronary heart disease / myocardial infarction?</span>
+              <div class="control-row">
+                <label class="pill">
+                  <input type="radio" id="HD_yes" name="HD" value="Yes" {% if form_data.HD == 1 %} checked {% endif %}>
+                  Yes
+                </label>
+                <label class="pill">
+                  <input type="radio" id="HD_no" name="HD" value="No" {% if form_data.HD == 0 %} checked {% endif %}>
+                  No
+                </label>
+              </div>
+            </div>
+
+            <!-- EX -->
+            <div class="field">
+              <span class="label">Exercised in the last 30 days (not including your job)?</span>
+              <div class="control-row">
+                <label class="pill">
+                  <input type="radio" id="EX_yes" name="EX" value="Yes" {% if form_data.EX == 1 %} checked {% endif %}>
+                  Yes
+                </label>
+                <label class="pill">
+                  <input type="radio" id="EX_no" name="EX" value="No" {% if form_data.EX == 0 %} checked {% endif %}>
+                  No
+                </label>
+              </div>
+            </div>
+
+            <!-- FR -->
+            <div class="field">
+              <span class="label">Eat fruit every day?</span>
+              <div class="control-row">
+                <label class="pill">
+                  <input type="radio" id="FR_yes" name="FR" value="Yes" {% if form_data.FR == 1 %} checked {% endif %}>
+                  Yes
+                </label>
+                <label class="pill">
+                  <input type="radio" id="FR_no" name="FR" value="No" {% if form_data.FR == 0 %} checked {% endif %}>
+                  No
+                </label>
+              </div>
+            </div>
+
+            <!-- VE -->
+            <div class="field">
+              <span class="label">Eat vegetables every day?</span>
+              <div class="control-row">
+                <label class="pill">
+                  <input type="radio" id="VE_yes" name="VE" value="Yes" {% if form_data.VE == 1 %} checked {% endif %}>
+                  Yes
+                </label>
+                <label class="pill">
+                  <input type="radio" id="VE_no" name="VE" value="No" {% if form_data.VE == 0 %} checked {% endif %}>
+                  No
+                </label>
+              </div>
+            </div>
+
+            <!-- DR -->
+            <div class="field">
+              <span class="label">Heavy drinker?</span>
+              <div class="control-row">
+                <label class="pill">
+                  <input type="radio" id="DR_yes" name="DR" value="Yes" {% if form_data.DR == 1 %} checked {% endif %}>
+                  Yes
+                </label>
+                <label class="pill">
+                  <input type="radio" id="DR_no" name="DR" value="No" {% if form_data.DR == 0 %} checked {% endif %}>
+                  No
+                </label>
+              </div>
+            </div>
+
+            <!-- CO -->
+            <div class="field">
+              <span class="label">Healthcare coverage?</span>
+              <div class="control-row">
+                <label class="pill">
+                  <input type="radio" id="CO_yes" name="CO" value="Yes" {% if form_data.CO == 1 %} checked {% endif %}>
+                  Yes
+                </label>
+                <label class="pill">
+                  <input type="radio" id="CO_no" name="CO" value="No" {% if form_data.CO == 0 %} checked {% endif %}>
+                  No
+                </label>
+              </div>
+            </div>
+
+            <!-- ND -->
+            <div class="field">
+              <span class="label">Couldn’t see a doctor due to cost (past 12 months)?</span>
+              <div class="control-row">
+                <label class="pill">
+                  <input type="radio" id="ND_yes" name="ND" value="Yes" {% if form_data.ND == 1 %} checked {% endif %}>
+                  Yes
+                </label>
+                <label class="pill">
+                  <input type="radio" id="ND_no" name="ND" value="No" {% if form_data.ND == 0 %} checked {% endif %}>
+                  No
+                </label>
+              </div>
+            </div>
+
+            <!-- RH -->
+            <div class="field">
+              <span class="label">Self-rated health (1=excellent, 5=poor)</span>
+              <input type="number" placeholder="1–5" name="RH" id="RH" step="any" value="{{ form_data.RH }}">
+            </div>
+
+            <!-- MH -->
+            <div class="field">
+              <span class="label">Days mental health not good (past 30 days)</span>
+              <input type="number" placeholder="0–30" name="MH" id="MH" step="any" value="{{ form_data.MH }}">
+            </div>
+
+            <!-- PH -->
+            <div class="field">
+              <span class="label">Days physical health not good (past 30 days)</span>
+              <input type="number" placeholder="0–30" name="PH" id="PH" step="any" value="{{ form_data.PH }}">
+            </div>
+
+            <!-- DW -->
+            <div class="field">
+              <span class="label">Serious difficulty walking?</span>
+              <div class="control-row">
+                <label class="pill">
+                  <input type="radio" id="DW_yes" name="DW" value="Yes" {% if form_data.DW == 1 %} checked {% endif %}>
+                  Yes
+                </label>
+                <label class="pill">
+                  <input type="radio" id="DW_no" name="DW" value="No" {% if form_data.DW == 0 %} checked {% endif %}>
+                  No
+                </label>
+              </div>
+            </div>
+
+            <!-- Gender -->
+            <div class="field">
+              <span class="label">Gender</span>
+              <select name="level0" id="level0">
+                <option value="male" {% if form_data.level0 == 'male' %} selected {% endif %}>Male</option>
+                <option value="female" {% if form_data.level0 == 'female' %} selected {% endif %}>Female</option>
+              </select>
+            </div>
+
+            <!-- Age -->
+            <div class="field">
+              <span class="label">Age</span>
+              <select name="level" id="level">
+                <option value="1" {% if form_data.level == '1' %} selected {% endif %}>18–24</option>
+                <option value="2" {% if form_data.level == '2' %} selected {% endif %}>25–29</option>
+                <option value="3" {% if form_data.level == '3' %} selected {% endif %}>30–34</option>
+                <option value="4" {% if form_data.level == '4' %} selected {% endif %}>35–39</option>
+                <option value="5" {% if form_data.level == '5' %} selected {% endif %}>40–44</option>
+                <option value="6" {% if form_data.level == '6' %} selected {% endif %}>45–49</option>
+                <option value="7" {% if form_data.level == '7' %} selected {% endif %}>50–54</option>
+                <option value="8" {% if form_data.level == '8' %} selected {% endif %}>55–59</option>
+                <option value="9" {% if form_data.level == '9' %} selected {% endif %}>60–64</option>
+                <option value="10" {% if form_data.level == '10' %} selected {% endif %}>65–69</option>
+                <option value="11" {% if form_data.level == '11' %} selected {% endif %}>70–74</option>
+                <option value="12" {% if form_data.level == '12' %} selected {% endif %}>74–79</option>
+                <option value="13" {% if form_data.level == '13' %} selected {% endif %}>80+</option>
+              </select>
+            </div>
+
+            <!-- Education -->
+            <div class="field">
+              <span class="label">Education level</span>
+              <select name="level2" id="level2">
+                <option value="1" {% if form_data.level2 == '1' %} selected {% endif %}>No school</option>
+                <option value="2" {% if form_data.level2 == '2' %} selected {% endif %}>Elementary/Middle school</option>
+                <option value="3" {% if form_data.level2 == '3' %} selected {% endif %}>Some high school</option>
+                <option value="4" {% if form_data.level2 == '4' %} selected {% endif %}>High school graduate</option>
+                <option value="5" {% if form_data.level2 == '5' %} selected {% endif %}>Some college</option>
+                <option value="6" {% if form_data.level2 == '6' %} selected {% endif %}>College graduate</option>
+              </select>
+            </div>
+
+            <!-- Income -->
+            <div class="field">
+              <span class="label">Income</span>
+              <select name="level3" id="level3">
+                <option value="1" {% if form_data.level3 == '1' %} selected {% endif %}>$10k or less</option>
+                <option value="2" {% if form_data.level3 == '2' %} selected {% endif %}>$10k–$15k</option>
+                <option value="3" {% if form_data.level3 == '3' %} selected {% endif %}>$15k–$20k</option>
+                <option value="4" {% if form_data.level3 == '4' %} selected {% endif %}>$20k–$25k</option>
+                <option value="5" {% if form_data.level3 == '5' %} selected {% endif %}>$25k–$35k</option>
+                <option value="6" {% if form_data.level3 == '6' %} selected {% endif %}>$35k–$50k</option>
+                <option value="7" {% if form_data.level3 == '7' %} selected {% endif %}>$50k–$75k</option>
+                <option value="8" {% if form_data.level3 == '8' %} selected {% endif %}>$75k or more</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn">Submit & Calculate Risk</button>
+            <div class="note">
+              Tip: If you’re not sure, choose the best estimate. You can re-run the form anytime.
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Results / Sidebar -->
+      <div class="card">
+        <div class="card-title">Results</div>
+        <p class="card-hint">Your model output will appear here after you submit.</p>
+
+        <div class="result">
+          <h3>Estimated Output</h3>
+          <div class="value">{{ input_values }}</div>
+          <div class="muted">
+            If you show a probability (e.g., 0–1), consider labeling it clearly as a model estimate.
+          </div>
+        </div>
+
+        <div class="disclaimer">
+          <strong>Disclaimer:</strong> This tool is for educational research only and is <strong>not</strong> medical advice.
+          Please consult a medical professional for diagnosis and treatment.
+        </div>
+
+        <span class="section-chip">Research note</span>
+        <p class="card-hint" style="margin-top:10px;">
+          You can add a short “Methods” paragraph here (dataset, model type, evaluation metrics).
+          That makes the site look much more legit for competitions.
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
